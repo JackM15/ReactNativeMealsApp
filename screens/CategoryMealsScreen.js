@@ -1,23 +1,39 @@
 import React from "react"
-import { Button, StyleSheet, Text, View } from "react-native"
+import { StyleSheet, FlatList, View, Text } from "react-native"
 
-import { CATEGORIES } from "../data/dummy-data"
+import MealItem from "../components/MealItem"
+import { CATEGORIES, MEALS } from "../data/dummy-data"
 
 const CategoryMealsScreen = ({ navigation }) => {
   //get param from pops
   const catId = navigation.getParam("categoryId")
-  //find it from our data
-  const selectedCategory = CATEGORIES.find((cat) => cat.id === catId)
+
+  //find out which meals have the categoryID
+  const displayedMeals = MEALS.filter(
+    (meal) => meal.categoryIds.indexOf(catId) >= 0
+  )
+
+  //Item to render in the flatlist
+  const renderMealItem = (itemData) => {
+    return (
+      <MealItem
+        title={itemData.item.title}
+        complexity={itemData.item.complexity}
+        affordability={itemData.item.affordability}
+        duration={itemData.item.duration}
+        image={itemData.item.imageUrl}
+        onSelectMeal={() => {}}
+      />
+    )
+  }
 
   return (
     <View style={styles.screen}>
-      <Text>The Category Meals Screen!</Text>
-      <Text>{selectedCategory.title}</Text>
-      <Button
-        title='Go to Details'
-        onPress={() => navigation.navigate("MealDetail")}
+      <FlatList
+        data={displayedMeals}
+        renderItem={renderMealItem}
+        style={{ width: "90%", paddingTop: 10 }}
       />
-      <Button title='Go Back' onPress={() => navigation.pop()} />
     </View>
   )
 }
